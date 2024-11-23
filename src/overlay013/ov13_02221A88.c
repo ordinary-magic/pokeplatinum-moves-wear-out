@@ -15,6 +15,7 @@
 #include "heap.h"
 #include "item.h"
 #include "message.h"
+#include "move_data.h"
 #include "move_table.h"
 #include "party.h"
 #include "pokemon.h"
@@ -807,7 +808,7 @@ static void ov13_02222B6C(UnkStruct_ov13_022213F0 *param0, u32 param1)
     Window_ScheduleCopyToVRAM(v0);
 }
 
-static void ov13_02222BB4(UnkStruct_ov13_022213F0 *param0, u32 param1, u32 param2)
+static void BuildAccuracyGUIElement(UnkStruct_ov13_022213F0 *param0, u32 param1, u32 param2)
 {
     Window *v0;
     Strbuf *v1;
@@ -817,7 +818,7 @@ static void ov13_02222BB4(UnkStruct_ov13_022213F0 *param0, u32 param1, u32 param
 
     v0 = &param0->unk_206C[param1];
 
-    if (param2 == 0) {
+    if (param2 > 100) {
         v1 = MessageLoader_GetNewStrbuf(param0->unk_1FA4, 50);
         v3 = Font_CalcStrbufWidth(FONT_SYSTEM, v1, 0);
         v4 = Window_GetWidth(v0) * 8 - v3;
@@ -855,7 +856,7 @@ static void ov13_02222C9C(UnkStruct_ov13_022213F0 *param0, u32 param1)
     Window_ScheduleCopyToVRAM(v0);
 }
 
-static void ov13_02222CE4(UnkStruct_ov13_022213F0 *param0, u32 param1, u32 param2)
+static void BuildPowerGUIElement(UnkStruct_ov13_022213F0 *param0, u32 param1, u32 param2)
 {
     Window *v0;
     Strbuf *v1;
@@ -865,7 +866,7 @@ static void ov13_02222CE4(UnkStruct_ov13_022213F0 *param0, u32 param1, u32 param
 
     v0 = &param0->unk_206C[param1];
 
-    if (param2 <= 1) {
+    if (param2 == MOVEDATA_VALUE_IS_0 || param2 == MOVEDATA_VALUE_IS_1) {
         v1 = MessageLoader_GetNewStrbuf(param0->unk_1FA4, 50);
         v3 = Font_CalcStrbufWidth(FONT_SYSTEM, v1, 0);
         v4 = Window_GetWidth(v0) * 8 - v3;
@@ -1355,9 +1356,9 @@ static void ov13_02223A10(UnkStruct_ov13_022213F0 *param0)
     ov13_02222170(param0, 7, 0, 0);
     ov13_022220CC(param0, v0->unk_00, 0 + v1, Unk_ov13_02228EB0[param0->unk_00->unk_34], FONT_SYSTEM, 0, TEXT_COLOR(15, 14, 0));
     ov13_02222B6C(param0, 8);
-    ov13_02222BB4(param0, 2 + v1, v0->unk_06);
+    BuildAccuracyGUIElement(param0, 2 + v1, v0->unk_06);
     ov13_02222C9C(param0, 9);
-    ov13_02222CE4(param0, 3 + v1, v0->unk_07);
+    BuildPowerGUIElement(param0, 3 + v1, v0->unk_07);
     ov13_02222DCC(param0, 4 + v1, v0->unk_00);
     ov13_02222E94(param0, 10);
     ov13_02222EF8(param0, 5 + v1, v0->unk_05);
@@ -1433,8 +1434,8 @@ static void ov13_02223C9C(UnkStruct_ov13_022213F0 *param0)
         UnkStruct_ov13_022236B8 *v0 = &param0->unk_04[param0->unk_00->unk_11].unk_30[param0->unk_00->unk_34];
 
         ov13_022220CC(param0, v0->unk_00, 1, Unk_ov13_02228EB0[param0->unk_00->unk_34], FONT_SYSTEM, 0, TEXT_COLOR(15, 14, 0));
-        ov13_02222BB4(param0, 6, v0->unk_06);
-        ov13_02222CE4(param0, 7, v0->unk_07);
+        BuildAccuracyGUIElement(param0, 6, v0->unk_06);
+        BuildPowerGUIElement(param0, 7, v0->unk_07);
         ov13_02222DCC(param0, 8, v0->unk_00);
         ov13_02222EF8(param0, 10, v0->unk_05);
         ov13_02222F74(param0, 3, v0->unk_02, v0->unk_03);
@@ -1443,8 +1444,8 @@ static void ov13_02223C9C(UnkStruct_ov13_022213F0 *param0)
 
         ov13_022220CC(param0, param0->unk_00->unk_24, 1, Unk_ov13_02228EB0[4], FONT_SYSTEM, 0, TEXT_COLOR(15, 14, 0));
         ov13_02222DCC(param0, 8, param0->unk_00->unk_24);
-        ov13_02222BB4(param0, 6, MoveTable_LoadParam(param0->unk_00->unk_24, MOVEATTRIBUTE_ACCURACY));
-        ov13_02222CE4(param0, 7, MoveTable_LoadParam(param0->unk_00->unk_24, MOVEATTRIBUTE_POWER));
+        BuildAccuracyGUIElement(param0, 6, GetMenuMoveAccuracy(param0->unk_00->unk_24, param0->unk_00->unk_08));
+        BuildPowerGUIElement(param0, 7, GetMenuMovePower(param0->unk_00->unk_24, param0->unk_00->unk_08));
         ov13_02222EF8(param0, 10, MoveTable_LoadParam(param0->unk_00->unk_24, MOVEATTRIBUTE_CLASS));
         ov13_02222F74(param0, 3, v1, v1);
     }

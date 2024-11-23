@@ -11,6 +11,7 @@
 #include "struct_decls/struct_020797DC_decl.h"
 #include "struct_decls/struct_party_decl.h"
 #include "struct_defs/chatot_cry.h"
+#include "struct_defs/move_data.h"
 #include "struct_defs/trainer_data.h"
 
 #include "field/field_system_decl.h"
@@ -41,6 +42,7 @@ typedef struct FieldBattleDTO {
     BagCursor *bagCursor;
     PokedexData *pokedex;
     PCBoxes *pcBoxes;
+    MoveDataBlock *moveData;
     ChatotCry *chatotCries[MAX_BATTLERS];
     PoketchData *poketchData;
     UnkStruct_0202C878 *unk_104;

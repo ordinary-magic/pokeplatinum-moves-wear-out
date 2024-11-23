@@ -14,6 +14,7 @@
 #include "font.h"
 #include "heap.h"
 #include "message.h"
+#include "move_data.h"
 #include "move_table.h"
 #include "pokemon.h"
 #include "render_window.h"
@@ -847,9 +848,10 @@ void PokemonSummaryScreen_PrintBattleMoveInfo(PokemonSummaryScreen *summaryScree
     Window_FillTilemap(&summaryScreen->extraWindows[6], 0);
     Window_FillTilemap(&summaryScreen->extraWindows[7], 0);
 
-    u32 moveAttribute = MoveTable_LoadParam(move, MOVEATTRIBUTE_POWER);
+    u32 moveAttribute = GetMenuMovePower(move, 0);
 
-    if (moveAttribute <= 1) {
+    // Only use triple dashes for moves with variable power, which are now passed as flags.
+    if (moveAttribute == MOVEDATA_VALUE_IS_0 || moveAttribute == MOVEDATA_VALUE_IS_1){
         MessageLoader_GetStrbuf(summaryScreen->msgLoader, pss_three_dashes, summaryScreen->strbuf);
     } else {
         SetAndFormatNumberBuf(summaryScreen, pss_move_power_template, moveAttribute, 3, PADDING_MODE_SPACES);
@@ -857,9 +859,10 @@ void PokemonSummaryScreen_PrintBattleMoveInfo(PokemonSummaryScreen *summaryScree
 
     PrintTextToWindow(summaryScreen, &summaryScreen->extraWindows[5], TEXT_COLOR(1, 2, 0), PSS_ALIGNMENT_CENTER);
 
-    moveAttribute = MoveTable_LoadParam(move, MOVEATTRIBUTE_ACCURACY);
+    moveAttribute = GetMenuMoveAccuracy(move, 0);
 
-    if (moveAttribute == 0) {
+    // Only use triple dashes for moves with sure hit accuracy, which is now indicated by accuracy > 100
+    if (moveAttribute > 100) {
         MessageLoader_GetStrbuf(summaryScreen->msgLoader, pss_three_dashes, summaryScreen->strbuf);
     } else {
         SetAndFormatNumberBuf(summaryScreen, pss_move_accuracy_template, moveAttribute, 3, PADDING_MODE_SPACES);

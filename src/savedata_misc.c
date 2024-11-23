@@ -8,6 +8,7 @@
 #include "struct_defs/sentence.h"
 
 #include "berry_patches.h"
+#include "move_data.h"
 #include "unk_02014A84.h"
 #include "unk_02014D38.h"
 #include "unk_02027F50.h"
@@ -22,6 +23,7 @@ void MiscSaveBlock_Init(MiscSaveBlock *miscSave)
     MI_CpuClearFast(miscSave, sizeof(MiscSaveBlock));
 
     BerryPatches_Clear(miscSave->berryPatches);
+    MoveDataBlock_Init(&miscSave->moveData);
     sub_02027F50(&miscSave->unk_680);
 
     MI_CpuFill16(miscSave->rivalName, CHAR_EOS, TRAINER_NAME_LEN + 1);
@@ -53,6 +55,10 @@ BerryPatch *MiscSaveBlock_GetBerryPatches(SaveData *saveData)
 {
     MiscSaveBlock *miscSave = SaveData_SaveTable(saveData, SAVE_TABLE_ENTRY_MISC);
     return miscSave->berryPatches;
+}
+
+MoveDataBlock *MiscSaveBlock_GetMoveData(SaveData *saveData) {
+    return &SaveData_MiscSaveBlock(saveData)->moveData;
 }
 
 UnkStruct_02027860 *sub_02027860(SaveData *saveData)

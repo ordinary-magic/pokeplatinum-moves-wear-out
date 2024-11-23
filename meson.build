@@ -273,20 +273,20 @@ ovly_mapper = custom_target('overlay.map',
 ############################################################
 sha1sum = find_program(['sha1sum', 'shasum'], native: true)
 
-test('SBIN Checksums',
-    sha1sum,
-    args: ['-c', '--quiet', sbins_sha1]
-)
+#test('SBIN Checksums',
+#    sha1sum,
+#    args: ['-c', '--quiet', sbins_sha1]
+#)
 
-test('Filesystem Checksums',
-    sha1sum,
-    args: ['-c', '--quiet', filesys_sha1]
-)
+#test('Filesystem Checksums',
+#    sha1sum,
+#    args: ['-c', '--quiet', filesys_sha1]
+#)
 
-test('ROM Checksum',
-    sha1sum,
-    args: ['-c', '--quiet', rom_sha1]
-)
+#test('ROM Checksum',
+#    sha1sum,
+#    args: ['-c', '--quiet', rom_sha1]
+#)
 
 
 ############################################################

@@ -19,6 +19,7 @@
 #include "item.h"
 #include "menu.h"
 #include "message.h"
+#include "move_data.h"
 #include "move_table.h"
 #include "narc.h"
 #include "poffin.h"
@@ -251,9 +252,9 @@ void ov84_0223F584(UnkStruct_ov84_0223B5A0 *param0, u16 param1)
     Strbuf_Free(v1);
     Text_AddPrinterWithParamsAndColor(v0, FONT_SYSTEM, param0->unk_3F8, 48, 16, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 14, 0), NULL);
 
-    v3 = MoveTable_LoadParam(v2, MOVEATTRIBUTE_POWER);
+    v3 = GetMenuMovePower(v2, 0);
 
-    if (v3 <= 1) {
+    if (v3 == MOVEDATA_VALUE_IS_0 || v3 == MOVEDATA_VALUE_IS_1) {
         v1 = MessageLoader_GetNewStrbuf(param0->unk_114, 24);
     } else {
         v1 = MessageLoader_GetNewStrbuf(param0->unk_114, 91);
@@ -263,9 +264,9 @@ void ov84_0223F584(UnkStruct_ov84_0223B5A0 *param0, u16 param1)
     StringTemplate_Format(param0->unk_118, param0->unk_3F8, v1);
     Strbuf_Free(v1);
     Text_AddPrinterWithParamsAndColor(v0, FONT_SYSTEM, param0->unk_3F8, 96 + 64, 16, TEXT_SPEED_NO_TRANSFER, TEXT_COLOR(15, 14, 0), NULL);
-    v3 = MoveTable_LoadParam(v2, MOVEATTRIBUTE_ACCURACY);
+    v3 = GetMenuMoveAccuracy(v2, 0);
 
-    if (v3 == 0) {
+    if (v3 > 100) {
         v1 = MessageLoader_GetNewStrbuf(param0->unk_114, 24);
     } else {
         v1 = MessageLoader_GetNewStrbuf(param0->unk_114, 91);

@@ -25,6 +25,7 @@
 #include "heap.h"
 #include "item.h"
 #include "message.h"
+#include "move_data.h"
 #include "move_table.h"
 #include "narc.h"
 #include "palette.h"
@@ -1255,8 +1256,8 @@ static void ov13_02220F98(UnkStruct_ov13_022213F0 *param0)
             v2->unk_03 = MoveTable_CalcMaxPP(v2->unk_00, v2->unk_03);
             v2->unk_04 = MoveTable_LoadParam(v2->unk_00, MOVEATTRIBUTE_TYPE);
             v2->unk_05 = MoveTable_LoadParam(v2->unk_00, MOVEATTRIBUTE_CLASS);
-            v2->unk_06 = MoveTable_LoadParam(v2->unk_00, MOVEATTRIBUTE_ACCURACY);
-            v2->unk_07 = MoveTable_LoadParam(v2->unk_00, MOVEATTRIBUTE_POWER);
+            v2->unk_06 = GetMenuMoveAccuracy(v2->unk_00, param0->unk_00->unk_08);
+            v2->unk_07 = GetMenuMovePower(v2->unk_00, param0->unk_00->unk_08);
         }
     }
 }

@@ -7,6 +7,7 @@
 #include "field_overworld_state.h"
 #include "game_records.h"
 #include "journal.h"
+#include "move_data.h"
 #include "party.h"
 #include "poffin.h"
 #include "poketch_data.h"

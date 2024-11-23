@@ -38,6 +38,7 @@
 #include "flags.h"
 #include "heap.h"
 #include "item.h"
+#include "move_data.h"
 #include "move_table.h"
 #include "party.h"
 #include "pokemon.h"
@@ -2276,6 +2277,7 @@ static BOOL BattleController_DecrementPP(BattleSystem *battleSys, BattleContext 
         if (ATTACKING_MON.ppCur[moveSlot] && moveSlot < LEARNED_MOVES_MAX) {
             if (ATTACKING_MON.ppCur[moveSlot] > ppCost) {
                 ATTACKING_MON.ppCur[moveSlot] -= ppCost;
+                AdjustMoveBasedOnPPLoss(ATTACKING_MON.moves[moveSlot], ppCost, battleSys);
             } else {
                 ATTACKING_MON.ppCur[moveSlot] = 0;
             }
@@ -2897,8 +2899,9 @@ static int BattleController_CheckMoveHitAccuracy(BattleSystem *battleSys, Battle
         sumStages = 12;
     }
 
-    u16 hitRate = MOVE_DATA(move).accuracy;
-    if (hitRate == 0) {
+    // perform the accuracy adjustment
+    u16 hitRate = GetBattleMoveEffectiveAccuracy(move, battleSys);
+    if (hitRate > 100) {
         return 0;
     }
 

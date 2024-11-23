@@ -1616,6 +1616,12 @@ static BOOL BtlCmd_CalcDamage(BattleSystem *battleSys, BattleContext *battleCtx)
     battleCtx->damage = BattleSystem_CalcDamageVariance(battleSys, battleCtx, battleCtx->damage);
     battleCtx->damage *= -1;
 
+    // Moves with 0 Power now do 0 Damage (Romhack Change)
+    // Note: this is set in the damage calc, after variable damage effects happen
+    //       and thus should be reasonably foolproof.
+    if (!battleCtx->movePower)
+        battleCtx->damage = 0;
+
     return FALSE;
 }
 
@@ -4573,7 +4579,7 @@ static BOOL BtlCmd_TryOHKOMove(BattleSystem *battleSys, BattleContext *battleCtx
             && Battler_Ability(battleCtx, battleCtx->defender) != ABILITY_NO_GUARD) {
             // Use the usual OHKO accuracy check: scale upwards with the difference between the attacker and
             // defender's levels.
-            hit = CURRENT_MOVE_DATA.accuracy + (ATTACKING_MON.level - DEFENDING_MON.level);
+            hit = GetBattleMoveEffectiveAccuracy(battleCtx->moveCur, battleSys) + (ATTACKING_MON.level - DEFENDING_MON.level);
 
             if ((BattleSystem_RandNext(battleSys) % 100) < hit && ATTACKING_MON.level >= DEFENDING_MON.level) {
                 hit = TRUE;
@@ -4590,7 +4596,7 @@ static BOOL BtlCmd_TryOHKOMove(BattleSystem *battleSys, BattleContext *battleCtx
                 hit = TRUE;
             } else {
                 // Fallback to the usual OHKO accuracy check, for some reason.
-                hit = CURRENT_MOVE_DATA.accuracy + (ATTACKING_MON.level - DEFENDING_MON.level);
+                hit = GetBattleMoveEffectiveAccuracy(battleCtx->moveCur, battleSys) + (ATTACKING_MON.level - DEFENDING_MON.level);
 
                 if ((BattleSystem_RandNext(battleSys) % 100) < hit && ATTACKING_MON.level >= DEFENDING_MON.level) {
                     hit = TRUE;
@@ -5234,6 +5240,7 @@ static BOOL BtlCmd_TrySpite(BattleSystem *battleSys, BattleContext *battleCtx)
             battleCtx->msgMoveTemp = DEFENDER_LAST_MOVE;
             battleCtx->msgTemp = dec;
             DEFENDING_MON.ppCur[moveSlot] -= dec;
+            AdjustMoveBasedOnPPLoss(DEFENDER_LAST_MOVE, dec, battleSys);
 
             BattleMon_CopyToParty(battleSys, battleCtx, battleCtx->defender);
         }
@@ -6981,6 +6988,7 @@ static BOOL BtlCmd_TryGrudge(BattleSystem *battleSys, BattleContext *battleCtx)
         && battleCtx->moveTemp != MOVE_STRUGGLE) {
         int moveSlot = ATTACKER_MOVE_SLOT;
         ATTACKING_MON.ppCur[moveSlot] = 0;
+        AdjustMoveBasedOnPPLoss(ATTACKING_MON.moves[moveSlot], 255, battleSys);
         battleCtx->msgMoveTemp = ATTACKING_MON.moves[moveSlot];
 
         BattleMon_CopyToParty(battleSys, battleCtx, battleCtx->attacker);
@@ -7144,11 +7152,13 @@ static BOOL BtlCmd_TryPursuit(BattleSystem *battleSys, BattleContext *battleCtx)
                 if (MOVE_DATA(move).effect == BATTLE_EFFECT_HIT_BEFORE_SWITCH
                     && battleCtx->battleMons[i].ppCur[moveSlot]) {
                     battleCtx->battleMons[i].ppCur[moveSlot]--;
+                    AdjustMoveBasedOnPPLoss(battleCtx->battleMons[i].moves[moveSlot], 1, battleSys);
 
                     // CompareVarToValue the switching battler has Pressure, apply it to the battler using Pursuit.
                     if (Battler_Ability(battleCtx, battleCtx->switchedMon) == ABILITY_PRESSURE
                         && battleCtx->battleMons[i].ppCur[moveSlot]) {
                         battleCtx->battleMons[i].ppCur[moveSlot]--;
+                        AdjustMoveBasedOnPPLoss(battleCtx->battleMons[i].moves[moveSlot], 1, battleSys);
                     }
 
                     BattleSystem_SetupLoop(battleSys, battleCtx);

@@ -5,6 +5,7 @@
 #include "constants/string.h"
 
 #include "struct_decls/struct_02027860_decl.h"
+#include "struct_defs/move_data.h"
 #include "struct_defs/sentence.h"
 #include "struct_defs/struct_02027860.h"
 
@@ -33,6 +34,7 @@ typedef struct MiscSaveBlock {
     u32 unused;
     Sentence introMsg;
     ExtraSaveKey extraKey;
+    MoveDataBlock moveData;
 } MiscSaveBlock;
 
 int MiscSaveBlock_SaveSize(void);
@@ -40,6 +42,7 @@ void MiscSaveBlock_Init(MiscSaveBlock *miscSave);
 MiscSaveBlock *SaveData_MiscSaveBlock(SaveData *saveData);
 const MiscSaveBlock *SaveData_MiscSaveBlockConst(const SaveData *saveData);
 BerryPatch *MiscSaveBlock_GetBerryPatches(SaveData *saveData);
+MoveDataBlock *MiscSaveBlock_GetMoveData(SaveData *saveData);
 UnkStruct_02027860 *sub_02027860(SaveData *saveData);
 const u16 *MiscSaveBlock_RivalName(const MiscSaveBlock *miscSave);
 void MiscSaveBlock_SetRivalName(MiscSaveBlock *miscSave, Strbuf *name);

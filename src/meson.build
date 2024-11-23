@@ -10,6 +10,7 @@ pokeplatinum_c = files(
     'item.c',
     'main.c',
     'map_header.c',
+    'move_data.c',
     'move_table.c',
     'narc.c',
     'party.c',

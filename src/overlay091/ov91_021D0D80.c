@@ -26,6 +26,7 @@
 #include "list_menu.h"
 #include "menu.h"
 #include "message.h"
+#include "move_data.h"
 #include "move_table.h"
 #include "narc.h"
 #include "overlay_manager.h"
@@ -972,9 +973,9 @@ static void ov91_021D18C8(UnkStruct_ov91_021D0ED8 *param0, u32 param1)
         MessageLoader *v0;
         u32 v1;
 
-        v1 = MoveTable_LoadParam(param1, MOVEATTRIBUTE_POWER);
+        v1 = GetMenuMovePower(param1, 0);
 
-        if (v1 <= 1) {
+        if (v1 == MOVEDATA_VALUE_IS_0 || v1 == MOVEDATA_VALUE_IS_1){
             MessageLoader_GetStrbuf(param0->unk_F8, 33, param0->unk_100);
         } else {
             ov91_021D1618(param0, 29, v1, 3, 1);
@@ -982,9 +983,9 @@ static void ov91_021D18C8(UnkStruct_ov91_021D0ED8 *param0, u32 param1)
 
         ov91_021D1580(param0, 7, FONT_SYSTEM, TEXT_COLOR(1, 2, 0), 2);
 
-        v1 = MoveTable_LoadParam(param1, MOVEATTRIBUTE_ACCURACY);
+        v1 = GetMenuMoveAccuracy(param1, 0);
 
-        if (v1 == 0) {
+        if (v1 > 100) {
             MessageLoader_GetStrbuf(param0->unk_F8, 33, param0->unk_100);
         } else {
             ov91_021D1618(param0, 30, v1, 3, 1);

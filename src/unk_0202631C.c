@@ -45,7 +45,7 @@ int Pokedex_SaveSize(void)
     return sizeof(PokedexData);
 }
 
-PokedexData *sub_02026324(u32 param0)
+PokedexData *Pokedex_New(u32 param0)
 {
     PokedexData *v0;
 

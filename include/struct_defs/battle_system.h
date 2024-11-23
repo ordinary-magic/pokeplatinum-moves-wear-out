@@ -17,6 +17,7 @@
 #include "struct_decls/struct_020797DC_decl.h"
 #include "struct_decls/struct_party_decl.h"
 #include "struct_defs/chatot_cry.h"
+#include "struct_defs/move_data.h"
 #include "struct_defs/struct_0207C690.h"
 #include "struct_defs/trainer_data.h"
 
@@ -63,6 +64,7 @@ struct BattleSystem {
     PokedexData *pokedex;
     PCBoxes *pcBoxes;
     Party *parties[4];
+    MoveDataBlock *moveData;
     ChatotCry *unk_78[4];
     UnkStruct_02007768 *unk_88;
     UnkStruct_ov12_0221FCDC *unk_8C;

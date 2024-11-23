@@ -37,6 +37,7 @@
 #include "map_header.h"
 #include "map_tile_behavior.h"
 #include "message.h"
+#include "move_data.h"
 #include "party.h"
 #include "player_avatar.h"
 #include "pokemon.h"
@@ -44,6 +45,7 @@
 #include "rtc.h"
 #include "save_player.h"
 #include "savedata.h"
+#include "savedata_misc.h"
 #include "strbuf.h"
 #include "system_data.h"
 #include "system_flags.h"
@@ -105,7 +107,8 @@ FieldBattleDTO *FieldBattleDTO_New(enum HeapId heapID, u32 battleType)
     }
 
     dto->bag = Bag_New(heapID);
-    dto->pokedex = sub_02026324(heapID);
+    dto->moveData = MoveData_New(heapID);
+    dto->pokedex = Pokedex_New(heapID);
     dto->options = Options_New(heapID);
     dto->unk_10C = sub_0206D140(heapID);
     dto->bagCursor = NULL;
@@ -212,6 +215,7 @@ void FieldBattleDTO_Free(FieldBattleDTO *dto)
     }
 
     Heap_FreeToHeap(dto->bag);
+    Heap_FreeToHeap(dto->moveData);
     Heap_FreeToHeap(dto->pokedex);
     Heap_FreeToHeap(dto->options);
     sub_0206D158(dto->unk_10C);
@@ -246,6 +250,7 @@ void FieldBattleDTO_InitFromGameState(FieldBattleDTO *dto, const FieldSystem *fi
 {
     TrainerInfo *trainerInfo = SaveData_GetTrainerInfo(save);
     Party *party = Party_GetFromSavedata(save);
+    MoveDataBlock *moveData = MiscSaveBlock_GetMoveData(save);
     Bag *bag = SaveData_GetBag(save);
     PokedexData *pokedex = SaveData_Pokedex(save);
     ChatotCry *chatotCry = GetChatotCryDataFromSave(save);
@@ -266,6 +271,7 @@ void FieldBattleDTO_InitFromGameState(FieldBattleDTO *dto, const FieldSystem *fi
     FieldBattleDTO_CopyTrainerInfoToBattler(dto, trainerInfo, BATTLER_PLAYER_SLOT_1);
     FieldBattleDTO_CopyPartyToBattler(dto, party, BATTLER_PLAYER_SLOT_1);
     Bag_Copy(bag, dto->bag);
+    MoveData_Copy(moveData, dto->moveData);
     Pokedex_Copy(pokedex, dto->pokedex);
     Options_Copy(options, dto->options);
     FieldBattleDTO_CopyChatotCryToBattler(dto, chatotCry, BATTLER_PLAYER_SLOT_1);
@@ -300,6 +306,7 @@ void FieldBattleDTO_InitWithNormalizedMonLevels(FieldBattleDTO *dto, const Field
     TrainerInfo *trainerInfo = SaveData_GetTrainerInfo(fieldSystem->saveData);
     Party *party = Party_GetFromSavedata(fieldSystem->saveData);
     Bag *bag = SaveData_GetBag(fieldSystem->saveData);
+    MoveDataBlock *moveData = MiscSaveBlock_GetMoveData(fieldSystem->saveData);
     PokedexData *pokedex = SaveData_Pokedex(fieldSystem->saveData);
     ChatotCry *chatotCry = GetChatotCryDataFromSave(fieldSystem->saveData);
     Options *options = SaveData_Options(fieldSystem->saveData);
@@ -325,6 +332,7 @@ void FieldBattleDTO_InitWithNormalizedMonLevels(FieldBattleDTO *dto, const Field
     Heap_FreeToHeap(mon);
 
     Bag_Copy(bag, dto->bag);
+    MoveData_Copy(moveData, dto->moveData);
     Pokedex_Copy(pokedex, dto->pokedex);
     Options_Copy(options, dto->options);
     FieldBattleDTO_CopyChatotCryToBattler(dto, chatotCry, BATTLER_PLAYER_SLOT_1);
@@ -348,6 +356,7 @@ void FieldBattleDTO_InitWithPartyOrder(FieldBattleDTO *dto, const FieldSystem *f
 {
     TrainerInfo *trainerInfo = SaveData_GetTrainerInfo(fieldSystem->saveData);
     Bag *bag = SaveData_GetBag(fieldSystem->saveData);
+    MoveDataBlock *moveData = MiscSaveBlock_GetMoveData(fieldSystem->saveData);
     PokedexData *pokedex = SaveData_Pokedex(fieldSystem->saveData);
     ChatotCry *chatotCry = GetChatotCryDataFromSave(fieldSystem->saveData);
     Options *options = SaveData_Options(fieldSystem->saveData);
@@ -391,6 +400,7 @@ void FieldBattleDTO_InitWithPartyOrder(FieldBattleDTO *dto, const FieldSystem *f
     }
 
     Bag_Copy(bag, dto->bag);
+    MoveData_Copy(moveData, dto->moveData);
     Pokedex_Copy(pokedex, dto->pokedex);
     Options_Copy(options, dto->options);
     FieldBattleDTO_CopyChatotCryToBattler(dto, chatotCry, BATTLER_PLAYER_SLOT_1);
@@ -430,11 +440,13 @@ void FieldBattleDTO_UpdateFieldSystem(const FieldBattleDTO *dto, FieldSystem *fi
     Bag *bag = SaveData_GetBag(fieldSystem->saveData);
     PokedexData *pokedex = SaveData_Pokedex(fieldSystem->saveData);
     u16 *fieldSysSafariBalls = sub_0203A784(SaveData_GetFieldOverworldState(fieldSystem->saveData));
+    MoveDataBlock *moveData = MiscSaveBlock_GetMoveData(fieldSystem->saveData);
 
     TrainerInfo_Copy(dto->trainerInfo[BATTLER_PLAYER_SLOT_1], trainerInfo);
     Party_cpy(dto->parties[BATTLER_PLAYER_SLOT_1], party);
     Bag_Copy(dto->bag, bag);
     Pokedex_Copy(dto->pokedex, pokedex);
+    MoveData_Copy(dto->moveData, moveData);
 
     *fieldSysSafariBalls = dto->countSafariBalls;
 }

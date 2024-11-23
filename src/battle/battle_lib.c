@@ -35,6 +35,7 @@
 #include "flags.h"
 #include "heap.h"
 #include "item.h"
+#include "move_data.h"
 #include "move_table.h"
 #include "narc.h"
 #include "party.h"
@@ -6675,6 +6676,12 @@ int BattleSystem_CalcMoveDamage(BattleSystem *battleSys,
         movePower = inPower;
     }
 
+    // Apply Power Reduction Here
+    // Note: It seems like every path (AI simulated/actual) for damage calculation
+    //       passes through this one line. Thank you pokemon company.
+    movePower = AdjustBattleMoveEffectivePower(move, movePower, battleSys);
+    battleCtx->movePower = movePower; // Save this for later :3
+
     if (attackerParams.ability == ABILITY_NORMALIZE) {
         moveType = TYPE_NORMAL;
     } else if (inType == TYPE_NORMAL) {
@@ -7392,6 +7399,7 @@ void BattleSystem_DecPPForPressure(BattleContext *battleCtx, int attacker, int d
         && Battler_Ability(battleCtx, defender) == ABILITY_PRESSURE
         && battleCtx->battleMons[attacker].ppCur[battleCtx->moveSlot[attacker]]) {
         battleCtx->battleMons[attacker].ppCur[battleCtx->moveSlot[attacker]]--;
+        AdjustMoveBasedOnPPLoss(battleCtx->battleMons[attacker].moves[battleCtx->moveSlot[attacker]], 1, battleCtx->taskData->battleSys);
     }
 }
 
