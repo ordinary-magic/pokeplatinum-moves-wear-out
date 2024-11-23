@@ -1,9 +1,9 @@
-# Pokémon Platinum
+# Pokémon Platinum but Moves Get Worse
 
-This is a WIP decompilation of Pokémon Platinum. For instructions on how to set up the repository, please read [INSTALL.md](INSTALL.md).
+This is a romhack based off of the pret pokemon platinum decomp. The premise is that every time pp is decuted from a move, its accuracy/power are reduced.
+The mod has configurable settings via the #defines at the top of move_data.c if you'd like to turn off either power/accuracy or adjust the amount by which they are reduced per pp.
 
-This repository builds the following ROMs:
+Patchfile coming soon, please watch for it on the Releases Page.
 
-* [**pokeplatinum.us.nds**](https://datomatic.no-intro.org/index.php?page=show_record&s=28&n=3541) `sha1: ce81046eda7d232513069519cb2085349896dec7`
-
-For contacts and other pret projects, see [pret.github.io](https://pret.github.io/). In addition to the pret Discord, also see the [VoidMatrix Discord (#decomp)](https://discord.gg/prUAgd5).
+This is based off of Pret's WIP decompilation of Pokémon Platinum. Please consult them for releavnt info. 
+For instructions on how to set up the repository, please read [INSTALL.md](INSTALL.md).
