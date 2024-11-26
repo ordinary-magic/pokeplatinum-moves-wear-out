@@ -6679,8 +6679,9 @@ int BattleSystem_CalcMoveDamage(BattleSystem *battleSys,
     // Apply Power Reduction Here
     // Note: It seems like every path (AI simulated/actual) for damage calculation
     //       passes through this one line. Thank you pokemon company.
-    movePower = AdjustBattleMoveEffectivePower(move, movePower, battleSys);
-    battleCtx->movePower = movePower; // Save this for later :3
+    // Tweak: Crits bypass the damage reduction, for funzies :3
+    if (criticalMul == 1)
+        movePower = AdjustBattleMoveEffectivePower(move, movePower, battleSys);
 
     if (attackerParams.ability == ABILITY_NORMALIZE) {
         moveType = TYPE_NORMAL;

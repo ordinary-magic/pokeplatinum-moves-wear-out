@@ -1616,10 +1616,13 @@ static BOOL BtlCmd_CalcDamage(BattleSystem *battleSys, BattleContext *battleCtx)
     battleCtx->damage = BattleSystem_CalcDamageVariance(battleSys, battleCtx, battleCtx->damage);
     battleCtx->damage *= -1;
 
-    // Moves with 0 Power now do 0 Damage (Romhack Change)
-    // Note: this is set in the damage calc, after variable damage effects happen
-    //       and thus should be reasonably foolproof.
-    if (!battleCtx->movePower)
+    // Get the move's expected power
+    int power = battleCtx->movePower;
+    if (!power)
+        power = MOVE_DATA(battleCtx->moveCur).power;
+
+    // Check if the adjusted power is 0, in which case it will instead do 0 damage
+    if(!AdjustBattleMoveEffectivePower(battleCtx->moveCur, power, battleSys))
         battleCtx->damage = 0;
 
     return FALSE;
